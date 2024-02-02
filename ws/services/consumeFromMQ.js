@@ -12,7 +12,7 @@ async function consumeFromMQ(amqp_url, queue, consumerTag, notify) {
       queue,
       async (msg) => {
         const message = onMessageReceived(msg);
-        notify(message);
+        await notify(message);
         await channel.ack(msg);
       },
       {

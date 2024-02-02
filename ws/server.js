@@ -19,13 +19,17 @@ wss.on("connection", (socket) => {
 
     try {
       const msg = JSON.parse(message);
+      const user_id = parseInt(msg.user_id);
 
       if (msg.type === "subscribe") {
-        subscribers.set(msg.user_id, socket); //ajoute un destinataire et le référence selon son id
+        subscribers.set(user_id, socket); //ajoute un destinataire et le référence selon son id
         const data = JSON.stringify({
           type: "subscribe",
-          user_id: msg.user_id
+          user_id: user_id
         });
+
+        console.log(`User #${user_id} has been registered to WS notifications`);
+
         socket.send(data);
       }
     } catch (error) {
@@ -36,11 +40,27 @@ wss.on("connection", (socket) => {
 });
 
 //emet une notification à tous les destinataires sans distinction d'id
-function notifyAll(commande) {
-  const msg = JSON.stringify(commande);
-  this.subscribers.forEach((client) => {
-    client.send(msg);
-  });
+async function notifyAll(msg) {
+  try {
+    const data = JSON.stringify({
+      type: "notification",
+      task: msg.task,
+      message: msg.message
+    });
+
+    //console.log("nombre de destinataires : " + subscribers.entries.length);
+
+    subscribers.forEach(async (client) => {
+      if (!client) {
+        console.log("User %s disconnected from Websocket", msg.task.user_id);
+      } else {
+        await client.send(data);
+        console.log("Notification sent to User : %s", msg.task.user_id);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 //emet une notification à un destinataire (User) sur la base de son id
@@ -52,17 +72,20 @@ function notify(msg) {
       message: msg.message
     });
 
-    const client = subscribers.get(parseInt(msg.task.user_id));
+    const user_id = msg.task.user_id;
+
+    const client = subscribers.get(parseInt(user_id));
 
     if (!client) {
-      console.log("User %s disconnected from Websocket", msg.task.id);
+      console.log("User %s disconnected from Websocket", msg.task.user_id);
     } else {
       client.send(data);
-      console.log("Notification to User : %s", msg.task.id);
+      console.log("Notification sent to User : %s", msg.task.user_id);
     }
   } catch (error) {
     console.error(error);
   }
 }
 
-await consumeFromMQ(amqp_url, queue, consumerTag, notify);
+await consumeFromMQ(amqp_url, queue, consumerTag, notify); //pour envoyer uniquement à l'abonnée dont l'identifiant correspond à l'auteur de la Task
+//await consumeFromMQ(amqp_url, queue, consumerTag, notifyAll); //pour envoyer à tous les "abonnés" sans distinction
