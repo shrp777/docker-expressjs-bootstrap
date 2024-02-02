@@ -1,2 +1,5 @@
+.DS_Store
 .env
-api/node_modules
+node_modules
+data
+log

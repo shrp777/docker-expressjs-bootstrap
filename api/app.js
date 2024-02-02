@@ -1,5 +1,5 @@
 import express from "express";
-import pizzasRouter from "./routes/pizzasRouter.js";
+import tasksRouter from "./routes/tasksRouter.js";
 import cors from "cors";
 import helmet from "helmet";
 
@@ -13,7 +13,8 @@ app.use(cors()); //sécurité liée aux clients web
 app.use(express.json()); //parsing des données du body au format JSON
 app.use(express.urlencoded({ extended: false })); //parsing des données du body au format URL Encode
 
-app.use("/pizzas", pizzasRouter);
+app.use("/tasks", tasksRouter);
+app.use("/", (req, res, next) => res.json({ message: "Hello, World !" }));
 
 //génère une erreur 404 si aucune route n'a pas intercepté la requête HTTP
 app.use(catch404Errors);

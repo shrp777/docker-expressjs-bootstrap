@@ -1,0 +1,15 @@
+meta {
+  name: Update One Task by Id
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost:3333/tasks/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {"status":1}
+}
