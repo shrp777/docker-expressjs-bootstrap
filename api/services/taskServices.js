@@ -51,6 +51,7 @@ const updateOne = async (id, status) => {
         process.env.QUEUE,
         process.env.ROUTING_KEY
       );
+
       return updatedTask;
     }
   } catch (error) {

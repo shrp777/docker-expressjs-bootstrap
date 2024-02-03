@@ -14,7 +14,9 @@ app.use(express.json()); //parsing des données du body au format JSON
 app.use(express.urlencoded({ extended: false })); //parsing des données du body au format URL Encode
 
 app.use("/tasks", tasksRouter);
-app.use("/", (req, res, next) => res.json({ message: "Hello, World !" }));
+app.use("/", (req, res, next) =>
+  res.json({ message: "Welcome to Todolist API" })
+);
 
 //génère une erreur 404 si aucune route n'a pas intercepté la requête HTTP
 app.use(catch404Errors);

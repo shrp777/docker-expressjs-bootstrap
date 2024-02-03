@@ -8,9 +8,9 @@ const BINDINGS = {
 
 async function publishToMQ(
   amqpURL,
-  message = {},
+  message,
   exchange,
-  binding = "direct",
+  binding = BINDINGS.direct,
   queue,
   routingKey
 ) {
@@ -20,7 +20,7 @@ async function publishToMQ(
   try {
     connection = await amqplib.connect(amqpURL, "heartbeat=60");
     channel = await connection.createChannel();
-    //TODO: gérer les conditions d'emploi d'un exchange, d'une routing key ou d'une queue
+
     await channel.assertExchange(exchange, binding, { durable: true });
     await channel.assertQueue(queue, { durable: true });
     await channel.bindQueue(queue, exchange, routingKey);
@@ -30,7 +30,8 @@ async function publishToMQ(
       routingKey,
       Buffer.from(JSON.stringify(message))
     );
-    console.log(`Message published to "${queue}"`);
+
+    console.log(`Message published to "${queue}" queue`);
   } catch (error) {
     console.error(error);
     throw new Error("Can't publish message to RabbitMQ");
