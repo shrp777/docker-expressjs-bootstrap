@@ -1,6 +1,12 @@
-# Express.js + Node.js + Docker + RabbitMQ + WebSocket
+# Todolist
 
-__Ce projet est une preuve de concept fournie à des fins pédagogiques. Le code n'est pas optimisé.__
+- Docker
+- Express.js + Node.js
+- RabbitMQ
+- WebSocket
+- MySQL
+
+__Ce projet est une preuve de concept fournie à des fins pédagogiques. 🚨 Le code n'est pas optimisé.__
 
 ## Installation
 
