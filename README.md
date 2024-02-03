@@ -28,6 +28,18 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. Le code
 
 ## Scénario de test
 
+### Résumé
+
+- Utilisateur s'abonne aux notifications liées à son id
+- Mise à jour du statut d'une Task
+- Ajout d'un message dans la queue RabbitMQ
+- Le service ws récupère le message depuis la queue
+- Le service ws émet une notification à l'utilisateur qui s'est abonné
+
+### Scénario complet
+
+#### Avec le client web (<http://localhost:8181>)
+
 - Démarrez les services Docker et attendre que tout soit opérationnel (une dizaine de secondes environ),
 - La base de données contient des données de test ("Tasks" et "Users" fictifs),
 
@@ -36,7 +48,7 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. Le code
 - Consultez la console JavaScript dans le navigateur pour observer les messages reçus et éventuelles erreurs.
 - Lorsque le serveur ws émet une notification, la page HTML doit être mise à jour automatiquement dès réception de la notification.
 
-OU
+#### Avec le client websocket de Postman
 
 - Utilisez Postman pour vous connecter au serveur "ws" :
   - Sélectionnez le type de requête websocket,
@@ -45,6 +57,9 @@ OU
   - Si la connexion au service ws est ok :
     - Dans l'onglet "Message", saisisez le message au format JSON : ```JSON {"type":"subscribe","user_id":1}```
     - Cliquez sur le bouton "Send" pour inscrire l'utilisateur #1. L'inscription permet à l'utilisateur de recevoir par la suite des messages lorsque le statut d'une de ses tâches évolue (le serveur ws trie les destinataires des messages envoyés en fonction de leur id).
+
+#### (suite) Avec client web ou Postman
+
 - Effectuez une requête HTTP Patch sur l'URL <http://localhost:3333/tasks/1> afin de mettre à jour le statut de la Task #1 dans la base de données, via l'API REST. Le body de la requête HTTP doit contenir les données suivantes au format JSON : `{"status":1}`
 
 Exemple de requête HTTP réalisée avec curl, en ligne de commande :
