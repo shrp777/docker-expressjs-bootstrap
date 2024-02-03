@@ -1,4 +1,6 @@
-# Todolist
+# Todolist (PoC)
+
+Application Back End basée sur les micro services.
 
 - Docker
 - Express.js + Node.js
