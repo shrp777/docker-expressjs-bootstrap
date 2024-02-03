@@ -4,7 +4,7 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. Le code
 
 ## Installation
 
-- Créer fichiers et remplir :
+- Créer et remplir les fichiers suivants en vous basant sur le contenu des fichier .env.example :
   - /adminer/.env
   - /api/.env
   - /mq/.env
@@ -17,14 +17,14 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. Le code
 ## Définition des services
 
 - __adminer__ (<http://localhost:8080>) : interface web d'administration de base de données
-- __api__ (<http://localhost:3333>) : API REST (Node.js / Express.js), permet de :
-  - lire une liste de Tasks,
-  - lire une Task par son id,
-  - mettre à jour le statut d'une Task par son id et envoyer un message au service mq (ajout d'un message dans la queue "tasks_completed")
-- __client__ : service NGINX permettant d'afficher une page HTML. La page HTML contient un script JS permettant d'abonner un utilisateur aux notifications Websocket à partir de l'id renseigné dans la barre d'adresse du navigateur (ex : <http://localhost:8081/index.html?user_id=1>). La page HTML affiche les notifications Websocket dynamiquement à l'écran et dans la console JS.
+- __api__ (<http://localhost:3333>) : service Node.js API REST (Express.js), permet de :
+  - lire une liste de Tasks (<http://localhost:3333/tasks>),
+  - lire une Task par son id (<http://localhost:3333/tasks/{id}>),
+  - mettre à jour le statut d'une Task par son id (<http://localhost:3333/tasks/{id}>) et envoyer un message au service mq (ajout d'un message dans la queue "tasks_completed")
+- __client__ (<http://localhost:8181>) : service NGINX permettant d'afficher une page HTML. La page HTML contient un script JS permettant d'abonner un utilisateur aux notifications Websocket à partir de l'id renseigné dans la barre d'adresse du navigateur (ex : <http://localhost:8181/index.html?user_id=1>). La page HTML affiche les notifications Websocket dynamiquement à l'écran et dans la console JS.
 - __db__ : base de données MariaDB contenant 2 tables (tasks et users)
 - __mq__ (<http://localhost:15673>) : service RabbitMQ permettant d'émettre, stocker et recevoir des messages via AMQP.
-- __ws__ (ws://localhost:3080) : serveur Node.js permettant d'émettre et recevoir des messages via Websocket, abonné à la queue "tasks_completed" du service "mq" (RabbitMQ)
+- __ws__ (<ws://localhost:3080>) : serveur Node.js permettant d'émettre et recevoir des messages via Websocket, abonné à la queue "tasks_completed" du service "mq" (RabbitMQ)
 
 ## Scénario de test
 
@@ -40,7 +40,7 @@ OU
 
 - Utilisez Postman pour vous connecter au serveur "ws" :
   - Sélectionnez le type de requête websocket,
-  - Dans la barre d'adresse, saissez l'adresse ws://localhost:3080
+  - Dans la barre d'adresse, saissez l'adresse <ws://localhost:3080>
   - Cliquez sur le bouton "Connect"
   - Si la connexion au service ws est ok :
     - Dans l'onglet "Message", saisisez le message au format JSON : ```JSON {"type":"subscribe","user_id":1}```
@@ -56,7 +56,7 @@ curl --request PATCH --url <http://localhost:3333/tasks/1> --data '{"status":1}'
 - La mise à jour du statut de la Task #1 déclenche l'ajout d'un message dans la queue "tasks_completed" du service "mq".
 - Le service "ws" est abonné à la queue "tasks_completed". Lorsqu'un message est ajouté à la queue, le service "ws" récupère le message et à son tour émet un message à destination de ses abonnés via le protocole Websocket.
 
-L'API REST peut être testée à l'aide du logiciel "Bruno" (cf. dossier Bruno).
+L'API REST peut être testée à l'aide du logiciel "Bruno" (cf. dossier /Bruno).
 
 - La réalisation du scénario de test doit afficher des messages de logs dans le terminal :
 
@@ -73,13 +73,13 @@ Message received from MQ
     user_id: 1,
     status: 1,
     content: 'Acheter du pain',
-    createdAt: '2024-02-02T20:55:23.000Z',
-    completedAt: '2024-02-02T20:55:23.000Z'
+    createdAt: '2024-01-02T17:00:00.000Z',
+    completedAt: '2024-02-02T20:54:23.000Z'
   }
 }
 ```
 
-- Les messages envoyés par le service "ws" doivent s'afficher dans l'interface de Postman si la connexion est effectuée.
+- Les messages envoyés par le service "ws" doivent s'afficher dans l'interface de Postman si la connexion et l'inscription de l'utilisateur effectuées.
 
 --
 
