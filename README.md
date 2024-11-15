@@ -1,6 +1,6 @@
 # Todolist (PoC)
 
-Application Back End basée sur les micro services.
+Application Back End distribuée basée sur les micro services.
 
 - Docker
 - Express.js + Node.js
@@ -12,7 +12,7 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. 🚨 Le
 
 ## Installation
 
-- Créer et remplir les fichiers suivants en vous basant sur le contenu des fichier .env.example :
+- Créer et remplir les fichiers suivants en vous basant sur le contenu des fichiers .env.example :
   - /adminer/.env
   - /api/.env
   - /mq/.env
@@ -20,11 +20,13 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. 🚨 Le
   - /mq/.env
   - /ws/.env
 
-- Démarrer les services : `docker compose up` (et consultez les logs dans le terminal pour vous assurez que les services communiquent)
+- Démarrer les services : `docker compose up` (et consultez les logs dans le terminal pour vous assurez que les services communiquent).
+
+- Patientez quelques secondes le temps que le services se démarrent.
 
 ## Définition des services
 
-- __adminer__ (<http://localhost:8080>) : interface web d'administration de base de données
+- __adminer__ (<http://localhost:8080>) : interface web d'administration de base de données (PHP).
 - __api__ (<http://localhost:3333>) : service Node.js API REST (Express.js), permet de :
   - lire une liste de Tasks (<http://localhost:3333/tasks>),
   - lire une Task par son id (<http://localhost:3333/tasks/{id}>),
@@ -72,7 +74,7 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. 🚨 Le
 
 Exemple de requête HTTP réalisée avec curl, en ligne de commande :
 
-```BASH
+```SH
 curl --request PATCH --url <http://localhost:3333/tasks/1> --data '{"status":1}'
 ```
 
@@ -87,7 +89,7 @@ L'API REST peut être testée à l'aide du logiciel "Bruno" (cf. dossier /Bruno)
 - Envoi du message au serveur "mq" par le service "api" : `Message published to "tasks_completed"`
 - Lecture du message dans la queue "tasks_completed" de "mq" par le service "ws" :
 
-```BASH
+```SH
 Message received from MQ
 {
   message: 'task 1 has been completed at Fri Feb 02 2024 20:55:23 GMT+0000 (Coordinated Universal Time)',
@@ -102,13 +104,13 @@ Message received from MQ
 }
 ```
 
-- Les messages envoyés par le service "ws" doivent s'afficher dans l'interface de Postman si la connexion et l'inscription de l'utilisateur effectuées.
+- Les messages envoyés par le service "ws" doivent s'afficher dans l'interface de Postman si la connexion et l'inscription de l'utilisateur ont été effectuées.
 
 --
 
-!["Logotype Shrp"](https://shrp.dev/images/shrp.png)
+!["Logotype Shrp"](https://sherpa.one/images/sherpa-logotype.png)
 
-**Alexandre Leroux**  
+__Alexandre Leroux__  
 _Enseignant / Formateur_  
 _Développeur logiciel web & mobile_
 
