@@ -1,4 +1,6 @@
-const ws = new WebSocket("ws://localhost:3080");
+const websocketServer = process.env.WEBSOCKET_SERVER;
+
+const ws = new WebSocket(`ws://${websocketServer}`);
 
 //connexion
 ws.onopen = (e) => {
