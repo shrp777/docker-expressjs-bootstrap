@@ -5,6 +5,7 @@ export default async (req, res, next) => {
     const id = parseInt(req.params.id);
     const status = parseInt(req.body.status);
 
+    //si id est nul ou égal 0 et/ou si status est nul ou égal 0
     if (!id || !status) {
       next(400);
     } else {

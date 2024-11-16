@@ -1,6 +1,6 @@
-# Todolist (PoC)
+# Todolist - Architecture Distribuée (PoC)
 
-Application Back End distribuée basée sur les micro services.
+Preuve de concept __Event-Driven Architecture__ à base de micro services distribués
 
 - Docker
 - Express.js + Node.js
@@ -14,23 +14,28 @@ __Ce projet est une preuve de concept fournie à des fins pédagogiques. 🚨 Le
 
 - Créer et remplir les fichiers suivants en vous basant sur le contenu des fichiers .env.example :
   - /adminer/.env
-  - /api/.env
+  - /tasks-api/.env
   - /mq/.env
   - /db/.env
   - /mq/.env
   - /ws/.env
 
-- Démarrer les services : `docker compose up` (et consultez les logs dans le terminal pour vous assurez que les services communiquent).
+- Démarrer les services : `docker compose up`
+
+- Démarrer les services et reconstruire l'image du service __webclient__ :
+`docker compose up --build`
 
 - Patientez quelques secondes le temps que le services se démarrent.
+- Consultez les logs dans le terminal pour vous assurez que les services communiquent.
 
 ## Définition des services
 
 - __adminer__ (<http://localhost:8080>) : interface web d'administration de base de données (PHP).
-- __api__ (<http://localhost:3333>) : service Node.js API REST (Express.js), permet de :
-  - lire une liste de Tasks (<http://localhost:3333/tasks>),
-  - lire une Task par son id (<http://localhost:3333/tasks/{id}>),
-  - mettre à jour le statut d'une Task par son id (<http://localhost:3333/tasks/{id}>) et envoyer un message au service mq (ajout d'un message dans la queue "tasks_completed")
+- __tasks-api__ (<http://localhost:3333>) : service Node.js API REST (Express.js), permet de :
+  - Créer un objet Task (POST <http://localhost:3333/tasks>),
+  - Lire une liste de Tasks (GET <http://localhost:3333/tasks>),
+  - Lire une Task par son id (GET <http://localhost:3333/tasks/{id}>),
+  - Mettre à jour le statut d'une Task par son id (PATCH <http://localhost:3333/tasks/{id}>) et envoyer un message au service mq (ajout d'un message dans la queue "tasks_completed")
 - __client__ (<http://localhost:8181>) : service NGINX permettant d'afficher une page HTML. La page HTML contient un script JS permettant d'abonner un utilisateur aux notifications Websocket à partir de l'id renseigné dans la barre d'adresse du navigateur (ex : <http://localhost:8181/index.html?user_id=1>). La page HTML affiche les notifications Websocket dynamiquement à l'écran et dans la console JS.
 - __db__ : base de données MariaDB contenant 2 tables (tasks et users)
 - __mq__ (<http://localhost:15673>) : service RabbitMQ permettant d'émettre, stocker et recevoir des messages via AMQP.
@@ -86,7 +91,7 @@ L'API REST peut être testée à l'aide du logiciel "Bruno" (cf. dossier /Bruno)
 - La réalisation du scénario de test doit afficher des messages de logs dans le terminal :
 
 - Réception de l'inscription de l'utilisateur #1 au serveur "ws" : `Subscribtion received : {"type":"subscribe","user_id":1}`
-- Envoi du message au serveur "mq" par le service "api" : `Message published to "tasks_completed"`
+- Envoi du message au serveur "mq" par le service "tasks-api" : `Message published to "tasks_completed"`
 - Lecture du message dans la queue "tasks_completed" de "mq" par le service "ws" :
 
 ```SH

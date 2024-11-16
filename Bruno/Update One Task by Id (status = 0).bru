@@ -1,0 +1,22 @@
+meta {
+  name: Update One Task by Id (status = 0)
+  type: http
+  seq: 5
+}
+
+patch {
+  url: http://localhost:3333/tasks/2
+  body: json
+  auth: none
+}
+
+body:json {
+  {"status":0}
+}
+
+tests {
+  test("doit recevoir une réponse avec un code de statut HTTP 400", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(400);
+  });
+}

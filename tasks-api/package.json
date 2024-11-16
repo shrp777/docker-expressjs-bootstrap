@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "tasks-api",
   "version": "1.0.0",
   "description": "Node.js - Express.js - API",
   "main": "server.js",

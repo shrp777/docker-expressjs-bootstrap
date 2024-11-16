@@ -1,13 +1,17 @@
 meta {
-  name: Read Tasks
+  name: Update One Task by Id (status = 1)
   type: http
-  seq: 1
+  seq: 5
 }
 
-get {
-  url: http://localhost:3333/tasks
-  body: none
+patch {
+  url: http://localhost:3333/tasks/2
+  body: json
   auth: none
+}
+
+body:json {
+  {"status":1}
 }
 
 tests {

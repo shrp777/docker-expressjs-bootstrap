@@ -1,0 +1,22 @@
+meta {
+  name: Create Task
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3333/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {"user_id":1,"content":"Aller marcher"}
+}
+
+tests {
+  test("doit recevoir une réponse avec un code de statut HTTP 201", function() {
+    const data = res.getBody();
+    expect(res.getStatus()).to.equal(201);
+  });
+}

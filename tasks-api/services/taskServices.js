@@ -2,7 +2,34 @@ import knex from "knex";
 import config from "../knexfile.js";
 import { BINDINGS, publishToMQ } from "./mqService.js";
 
+const TASK_STATUS = {
+  todo: 0,
+  done: 1
+};
+
 const db = knex(config[process.env.NODE_ENV]);
+
+const create = async (content, user_id = 1, status = TASK_STATUS.todo) => {
+  try {
+    if (!content || content === "") {
+      throw new Error("Invalid param");
+    }
+    if (!user_id || user_id === "") {
+      throw new Error("Invalid param");
+    }
+    const createdAt = new Date();
+    const createdTaskId = await db("tasks").insert({
+      user_id,
+      content,
+      status,
+      createdAt
+    });
+    return createdTaskId;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Can't create task");
+  }
+};
 
 const readAll = async () => {
   try {
@@ -22,19 +49,28 @@ const readOne = async (id) => {
     }
   } catch (error) {
     console.error(error);
-    throw new Error(`Can't read task ${id}`);
+    throw new Error(`Can't read task`);
   }
 };
 
 const updateOne = async (id, status) => {
   try {
-    if (!id || !status) {
+    if (!id || status === TASK_STATUS.todo) {
       throw new Error("Invalid params");
     } else {
       const now = new Date();
 
+      const existingTask = await readOne(id);
+
+      if (!existingTask) {
+        throw new Error(`Task does not exist`);
+      }
+      if (existingTask.status === TASK_STATUS.done) {
+        throw new Error(`Task status is already "Done"`);
+      }
+
       await db("tasks")
-        .update({ status: status, completedAt: now })
+        .update({ status: TASK_STATUS.done, completedAt: now })
         .where({ id: id });
 
       const updatedTask = await readOne(id);
@@ -56,8 +92,8 @@ const updateOne = async (id, status) => {
     }
   } catch (error) {
     console.error(error);
-    throw new Error(`Can't update task ${id}`);
+    throw new Error(`Can't update task`);
   }
 };
 
-export { readAll, readOne, updateOne };
+export { create, readAll, readOne, updateOne, TASK_STATUS };
