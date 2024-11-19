@@ -1,4 +1,4 @@
-const websocketServer = process.env.WEBSOCKET_SERVER;
+const websocketServer = "localhost:3080";
 
 const ws = new WebSocket(`ws://${websocketServer}`);
 

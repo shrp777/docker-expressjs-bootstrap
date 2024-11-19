@@ -35,8 +35,6 @@ services:
 
   webclient:
     build: ./webclient
-    env_file:
-      - ./webclient/.env
     ports:
       - 8181:80
     depends_on:
